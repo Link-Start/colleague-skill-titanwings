@@ -19,8 +19,8 @@
 11. **剩余产品方法 closure**：按 subject lifecycle、raw/file ingest、redistill、bundle、host install/export 等真实用户路径继续拆独立 feature；不把无关 methods 塞进 runtime。
 12. **Built-in adapters 与 parsers**：建立 `@distilly/adapters`，按 §10.6 的白名单逐个交付 Lark、DingTalk、Slack、Xquik 与本地 parser；每个 provider 是独立 feature，使用离线 fixture，secret 只走 refs，DingTalk message history 与全部 browser private-chat capture 保持 unavailable。加入 composition-owned user collection service，但不增加 EngineMethodMap 或 MCP tool。
 13. **Single-writer production runtime**：全部方法已有真 handler后，交付 root-scoped connect-or-start/attach service、actor-bound clients、production MCP/Panel/CLI/setup、user collection service 与 teardown ownership；第二 writer fail closed。
-14. **Legacy import 与 fresh install**：只迁移真实 dot-skill fixtures，完成 clean install、doctor、upgrade/uninstall 与 Codex / Claude Code host reopen。
-15. **OpenClaw / Hermes compatibility binding**：OpenClaw 复用 Claude-compatible bundle 并在 owned extension tree 生成绝对 launcher 的 `.mcp.json`；Hermes 使用 managed Skill、Distilly-owned wrapper 与 `config.yaml`，关闭 auxiliary resources/prompts；两者都运行真实 discovery/config smoke，但没有 exact capacity evidence 时保持 `host_unsupported`，不宣称可蒸馏。
+14. **Legacy import 与 fresh install**：只迁移真实 dot-skill fixtures，完成 clean install、doctor、upgrade/uninstall 与 Codex / Claude Code host reopen；每个宿主的 packaged closure 结果单独记入 §29.5 矩阵。
+15. **OpenClaw / Hermes binding 与容量证据**：OpenClaw 复用 Claude-compatible bundle 并在 owned extension tree 生成绝对 launcher 的 `.mcp.json`；Hermes 使用 managed Skill、Distilly-owned wrapper 与 `config.yaml`，关闭 auxiliary resources/prompts；两者都运行真实 discovery/config smoke，并分别以独立真实宿主版本 fixture 固定净容量。容量 fixture 只开放对应 tuple 的 briefing，不替代各自 packaged fresh-install closure；版本、release、descriptor、advertised schema projection、projection/probe digest 或 serializer 任一变化时保持 `host_unsupported`，直到重跑对应端到端测试。
 16. **其它宿主、关系、Bot、TUI、后台 executor 与 Catalog**：按真实需求分别立项，不能阻塞蒸馏主路径或扩大 Developer Preview 的宿主宣称。
 
 前一 feature 未完成可审查提交、设计/standing docs 与验收时，不开始下一 feature。任何迁移 feature 都禁止 dual-write、长期 adapter 或“先保留以防万一”的未发布格式兼容层。
@@ -73,7 +73,16 @@
 ### 29.5 宿主与安全验收
 
 - no web、no extraction、no file、subrun no MCP 都走明确 fallback；
-- Developer Preview 的 verified-capacity setup / fresh-install host matrix 恰为 Codex 与 Claude Code；OpenClaw/Hermes 可以出现在 compatibility binding 的安装/发现检查中，但没有 exact evidence 时不出现在可蒸馏或 successful fresh-install 列表；
+- Developer Preview 的宿主证据分成 briefing-capacity 与 packaged fresh-install 两张表，不能把一张表的绿灯复制到另一张：
+
+  | 宿主与 exact 版本 | `tools/list` advertised surface | briefing capacity（max input tokens / max result bytes） | packaged fresh-install closure |
+  |---|---|---|---|
+  | Codex `codex-cli 0.146.0` | canonical 五工具与 schemas | verified：65,536 / 65,536 | 已验证 Codex/macOS 纵向闭环 |
+  | OpenClaw `OpenClaw 2026.3.24 (af6f32f)` | 五工具；`schemaProfile=openclaw` 兼容投影，handler 仍用 canonical schemas | verified：65,536 / 65,536 | 安装/发现 smoke；完整重开、长期 Skill 与 uninstall 闭环待独立 E2E |
+  | Hermes `Hermes Agent v0.9.0 (2026.4.13)` | 五工具；`schemaProfile=hermes` 兼容投影，handler 仍用 canonical schemas | verified：49,752 / 49,752 | 安装/发现 smoke；完整重开、长期 Skill 与 uninstall 闭环待独立 E2E |
+  | Claude Code（版本未固定） | canonical 五工具与 schemas | fixture pending；未匹配时 `host_unsupported` | host-reopen 与容量证据待补 |
+
+  表中的 OpenClaw/Hermes 数值只计入带 `schemaProfile`、`advertisedToolContractDigest`、`probeContractDigest` 的 `fixtureId ...-v2` 记录；旧的 `...-v1` 记录不可加载。只有 exact host/version、release、wire、canonical descriptor、advertised schema projection、projection digest、probe digest 与 serializer tuple 全部匹配时，OpenClaw/Hermes 才能进入 briefing；其中 projection/probe digest 是内部 fixture 元数据，不是 MCP wire 字段。未记录版本只能运行兼容安装/发现 smoke，不能写成可蒸馏或 successful fresh-install。
 - 公开人物、创作者与私人联系人三种 source portfolio 都到达 traceable text、用户显式 file-ingest 的 raw-only、或 unavailable 之一；五工具路径不得声称自己保存 raw；
 - CLI / Panel credentialed collection 只从 secret refs 解析凭据，Lark 中国/国际不跨区、DingTalk 消息历史零网络返回 `host_unsupported`、Slack 不越过 bot scope且尊重 provider limits / `Retry-After`、Xquik 每次使用有界 limit 和非持久 MeteredReadConsentPort 的直接用户确认；
 - 同一 artifact 的多个表示不提高 eligible source count，unknown provenance 也不提高 stable；

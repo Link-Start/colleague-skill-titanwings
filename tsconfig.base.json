@@ -12,6 +12,7 @@
       "@distilly/cli/preview": ["./packages/cli/src/preview.ts"],
       "@distilly/engine/preview": ["./packages/engine/src/preview.ts"],
       "@distilly/mcp": ["./packages/mcp/src/index.ts"],
+      "@distilly/mcp/internal/schema": ["./packages/mcp/src/internal-schema.ts"],
       "@distilly/mcp/stdio": ["./packages/mcp/src/stdio.ts"],
       "@distilly/panel/server": ["./packages/panel/src/server.ts"],
       "@distilly/panel/web": ["./packages/panel/src/web.ts"],

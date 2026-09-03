@@ -430,6 +430,34 @@ describe("Distilly MCP server", () => {
     );
   });
 
+  it("projects schemas for hosts that cannot consume the canonical dialect", async () => {
+    const projected = createMcpServer({
+      client: engine,
+      reviewPresenter: presenter,
+      schemaProfile: "openclaw",
+    });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await requireSdkServer(projected).connect(serverTransport);
+    const projectedClient = new Client({ name: "distilly-mcp-projection-test", version: "0.0.0" });
+    await projectedClient.connect(clientTransport);
+    try {
+      const { tools } = await projectedClient.listTools();
+      expect(tools.map(({ name }) => name)).toEqual(distillyMcpTools.map(({ name }) => name));
+      for (const tool of tools) {
+        expect(tool.inputSchema).not.toHaveProperty("$schema");
+        expect(tool.outputSchema).not.toHaveProperty("$schema");
+        expect(tool.inputSchema).toHaveProperty("type", "object");
+        expect(tool.inputSchema).toHaveProperty("properties");
+      }
+      const getTool = tools.find(({ name }) => name === "distilly_get");
+      expect(getTool?.inputSchema).toHaveProperty("properties.action");
+      expect(getTool?.inputSchema).toHaveProperty("properties.subject");
+    } finally {
+      await projectedClient.close();
+      await projected.close();
+    }
+  });
+
   it("maps every get action through resolution without mutation context", async () => {
     const cases = [
       {

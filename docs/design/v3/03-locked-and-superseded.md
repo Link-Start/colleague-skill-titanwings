@@ -41,7 +41,7 @@
 33. 第一批 Node 支持窗口固定为 `^22.19 || ^24`；改变窗口必须同时更新安装检查、CI 矩阵与插件 fresh-install fixture，未经验证的未来 major 不自动进入支持面。
 34. 未来私人 UI capture 只能由可信 HostBinding 在第一帧前取得一次性、前台、精确范围授权；Developer Preview 的 Codex、Claude Code、OpenClaw 与 Hermes binding 都必须报告 unavailable，不创建 Controller，也不以 browser、Playwright、Computer Use 或截图读取私人消息。
 35. Protocol 的 id/time/facet grammars、WIRE_LIMITS、JSON-safe error / EmptyResult 和五工具 descriptor registry 是跨入口合同；不得由 SDK、MCP、Panel 或 HTTP 各自放宽。
-36. Developer Preview 当前的 verified-capacity setup / fresh-install 宿主范围恰为 Codex 与 Claude Code。OpenClaw 与 Hermes 是显式的 compatibility binding：它们可以验证宿主侧 bundle、Skill、wrapper、MCP 配置与发现生命周期；没有 exact handshake 或 binding fixture 时，setup / doctor 只能报告兼容层健康，必须明确 briefing capacity 未验证，不得把它们报告为可蒸馏宿主或写入 successful fresh-install 宣称；其它宿主可以以后增加 binding。
+36. Developer Preview 当前可进入 briefing 的 verified-capacity tuple 是 Codex、OpenClaw `2026.3.24` 与 Hermes `v0.9.0`；Claude Code 和其它版本仍需各自真实 fixture。OpenClaw 与 Hermes 的容量记录来自隔离干净 home、固定 `openai-codex/gpt-5.4`、确定性的 synthetic fixture server，以及真实可执行文件、模型调用和 MCP transport；分别固定 65,536 与 49,752 serialized-byte 净预算。这是对应 transport/value probe 的保守 lower bound，不是任意模型或任意用户 session 的剩余上下文保证；宿主安装/发现 smoke 与 packaged fresh-install 是独立证据，不能互相替代。没有 exact handshake 或匹配 binding fixture 时，setup / doctor 只能报告兼容层健康，必须明确 briefing capacity 未验证，不得把它们报告为可蒸馏宿主或写入 successful fresh-install 宣称；其它宿主可以以后增加 binding。
 37. Developer Preview 可以在 `@distilly/adapters` 内提供经过审核的 TypeScript SourceAdapter 与 MaterialParser；所有厂商凭据只通过 secret reference 解析，联网采集只能由用户在 CLI 或 Panel 显式发起，不能增加第六个 MCP 工具或把 secret 暴露给宿主模型。
 
 ### 3.2 仍开放

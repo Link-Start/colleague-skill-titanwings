@@ -3,8 +3,6 @@ import { createHash } from "node:crypto";
 
 import { distillyMcpTools } from "@distilly/protocol";
 
-export const TARGET_BRIEFING_BYTES = 65_536;
-export const TARGET_TOOL_RESULT_BYTES = 65_536;
 export const PROMPT_MARKERS = Object.freeze([
   "5d630b9597e64edb96f9153ecfd26e39",
   "05831e2bc30a49e8969e17d9221a641e",
@@ -41,61 +39,6 @@ const source = {
   capturedAt: "2026-08-31T00:00:00.000Z",
   authors: [],
 };
-
-const createBriefing = (content) => ({
-  job: {
-    id: JOB_ID,
-    subjectId: SUBJECT_ID,
-    generation: 1,
-    materialSetHash: `set_sha256_${HEX_64}`,
-    addedMaterialCount: 1,
-    totalMaterialCount: 1,
-    state: "leased",
-    queuedAt: "2026-08-31T00:00:00.000Z",
-    leaseExpiresAt: "2026-08-31T00:30:00.000Z",
-  },
-  lease: {
-    id: `lease_${HEX_32}`,
-    jobId: JOB_ID,
-    generation: 1,
-    briefContractDigest: `brief_contract_${HEX_64}`,
-    owner: `lease_owner_${HEX_32}`,
-    acquiredAt: "2026-08-31T00:00:00.000Z",
-    expiresAt: "2026-08-31T00:30:00.000Z",
-  },
-  subject,
-  materials: [
-    {
-      ref: "m001",
-      materialId: `mat_${HEX_64}`,
-      contentDigest: `sha256_${HEX_64}`,
-      kind: "web",
-      content,
-      source,
-      derivation: { kind: "native_text" },
-      sourceGroup: {
-        key: `sg_${HEX_64}`,
-        bases: ["canonical_uri"],
-        diversityStatus: "eligible",
-        cautions: [],
-      },
-      sensitivity: "shareable",
-    },
-  ],
-  contract: {
-    digest: `brief_contract_${HEX_64}`,
-    sourceGroupingVersion: "source-groups-v1",
-    promptVersion: `host-distill-v1-sha256_${HEX_64}`,
-    draftSchemaVersion: 1,
-    instructions: "Read the complete fixture without truncation.",
-    evidenceRules: ["Preserve every distributed capacity marker."],
-  },
-  limits: {
-    estimatedInputTokens: TARGET_BRIEFING_BYTES,
-    maximumInputTokens: TARGET_BRIEFING_BYTES,
-    maximumOutputBytes: TARGET_TOOL_RESULT_BYTES,
-  },
-});
 
 const deterministicHex = (length, seed) => {
   let value = "";
@@ -135,47 +78,126 @@ const fillToBytes = (factory, targetBytes, markers, seed) => {
   return value;
 };
 
-export const briefing = fillToBytes(
-  createBriefing,
-  TARGET_BRIEFING_BYTES,
-  BRIEF_MARKERS,
-  "briefing-capacity-v1",
-);
-
-const promptOutput = (prompt) => ({
-  ok: true,
-  wireVersion: "3",
-  value: { kind: "prompt", subject, prompt },
-});
-
-const promptEnvelope = fillToBytes(
-  promptOutput,
-  TARGET_TOOL_RESULT_BYTES,
-  PROMPT_MARKERS,
-  "prompt-capacity-v1",
-);
-export const prompt = promptEnvelope.value.prompt;
-
-export const expectedPromptOutput = promptEnvelope;
-export const expectedBriefingOutput = {
-  ok: true,
-  wireVersion: "3",
-  value: { kind: "briefing", briefing },
+const positiveByteCount = (value, label) => {
+  assert.ok(Number.isSafeInteger(value) && value > 0, `${label} must be a positive safe integer`);
+  return value;
 };
 
-export const promptToolInput = {
-  wireVersion: "3",
-  requestId: `req_${"1".repeat(32)}`,
-  action: "prompt",
-  subject: { kind: "id", subjectId: SUBJECT_ID },
+/**
+ * Creates a deterministic fixture at independently requested wire boundaries.
+ * Host verifiers use this factory so a host-specific limit never changes the
+ * canonical five-tool contract or the default Codex fixture.
+ */
+export const createHostCapacityFixture = ({
+  briefingBytes = 65_536,
+  toolResultBytes = 65_536,
+} = {}) => {
+  const targetBriefingBytes = positiveByteCount(briefingBytes, "briefingBytes");
+  const targetToolResultBytes = positiveByteCount(toolResultBytes, "toolResultBytes");
+  const createBriefing = (content) => ({
+    job: {
+      id: JOB_ID,
+      subjectId: SUBJECT_ID,
+      generation: 1,
+      materialSetHash: `set_sha256_${HEX_64}`,
+      addedMaterialCount: 1,
+      totalMaterialCount: 1,
+      state: "leased",
+      queuedAt: "2026-08-31T00:00:00.000Z",
+      leaseExpiresAt: "2026-08-31T00:30:00.000Z",
+    },
+    lease: {
+      id: `lease_${HEX_32}`,
+      jobId: JOB_ID,
+      generation: 1,
+      briefContractDigest: `brief_contract_${HEX_64}`,
+      owner: `lease_owner_${HEX_32}`,
+      acquiredAt: "2026-08-31T00:00:00.000Z",
+      expiresAt: "2026-08-31T00:30:00.000Z",
+    },
+    subject,
+    materials: [
+      {
+        ref: "m001",
+        materialId: `mat_${HEX_64}`,
+        contentDigest: `sha256_${HEX_64}`,
+        kind: "web",
+        content,
+        source,
+        derivation: { kind: "native_text" },
+        sourceGroup: {
+          key: `sg_${HEX_64}`,
+          bases: ["canonical_uri"],
+          diversityStatus: "eligible",
+          cautions: [],
+        },
+        sensitivity: "shareable",
+      },
+    ],
+    contract: {
+      digest: `brief_contract_${HEX_64}`,
+      sourceGroupingVersion: "source-groups-v1",
+      promptVersion: `host-distill-v1-sha256_${HEX_64}`,
+      draftSchemaVersion: 1,
+      instructions: "Read the complete fixture without truncation.",
+      evidenceRules: ["Preserve every distributed capacity marker."],
+    },
+    limits: {
+      estimatedInputTokens: targetBriefingBytes,
+      maximumInputTokens: targetBriefingBytes,
+      maximumOutputBytes: 65_536,
+    },
+  });
+  const briefing = fillToBytes(
+    createBriefing,
+    targetBriefingBytes,
+    BRIEF_MARKERS,
+    "briefing-capacity-v1",
+  );
+  const promptOutput = (prompt) => ({
+    ok: true,
+    wireVersion: "3",
+    value: { kind: "prompt", subject, prompt },
+  });
+  const promptEnvelope = fillToBytes(
+    promptOutput,
+    targetToolResultBytes,
+    PROMPT_MARKERS,
+    "prompt-capacity-v1",
+  );
+  return {
+    targetBriefingBytes,
+    targetToolResultBytes,
+    briefing,
+    prompt: promptEnvelope.value.prompt,
+    expectedPromptOutput: promptEnvelope,
+    expectedBriefingOutput: {
+      ok: true,
+      wireVersion: "3",
+      value: { kind: "briefing", briefing },
+    },
+    promptToolInput: {
+      wireVersion: "3",
+      requestId: `req_${"1".repeat(32)}`,
+      action: "prompt",
+      subject: { kind: "id", subjectId: SUBJECT_ID },
+    },
+    briefingToolInput: {
+      wireVersion: "3",
+      requestId: `req_${"2".repeat(32)}`,
+      action: "brief",
+      jobId: JOB_ID,
+    },
+  };
 };
 
-export const briefingToolInput = {
-  wireVersion: "3",
-  requestId: `req_${"2".repeat(32)}`,
-  action: "brief",
-  jobId: JOB_ID,
-};
+const defaultFixture = createHostCapacityFixture();
+export const TARGET_BRIEFING_BYTES = defaultFixture.targetBriefingBytes;
+export const TARGET_TOOL_RESULT_BYTES = defaultFixture.targetToolResultBytes;
+export const expectedPromptOutput = defaultFixture.expectedPromptOutput;
+export const expectedBriefingOutput = defaultFixture.expectedBriefingOutput;
+export const promptToolInput = defaultFixture.promptToolInput;
+export const briefingToolInput = defaultFixture.briefingToolInput;
 
 const canonicalize = (value) => {
   if (Array.isArray(value)) return value.map(canonicalize);
@@ -204,3 +226,39 @@ export const toolContractDigest = sha256(
     ),
   ),
 );
+
+// The real-host probe intentionally describes marker extraction generically.
+// It must never disclose the fixture's marker values in the model prompt: the
+// model has to read the complete MCP result to return them. Keep this contract
+// versioned and digest it into every host evidence record so a changed probe
+// cannot reuse an older capacity observation.
+const PROMPT_PROBE_TEMPLATE =
+  "Call the MCP tool exactly once with this exact JSON object: {{input}}. " +
+  "The result contains value.prompt with five distributed fields named M0 through M4. " +
+  "Extract only the 32-character marker immediately after each field and stop at the next |. " +
+  'Return only JSON exactly in this shape: {"markers":["M0 value","M1 value","M2 value","M3 value","M4 value"]}. ' +
+  "Do not infer or guess missing data.";
+const BRIEFING_PROBE_TEMPLATE =
+  "Call the MCP tool exactly once with this exact JSON object: {{input}}. " +
+  "In value.briefing.materials[0].content, extract only the 32-character marker immediately after each M0 through M4 field and stop at the next |. " +
+  "Also copy value.briefing.limits.estimatedInputTokens. " +
+  'Return only JSON exactly in this shape: {"markers":["M0 value","M1 value","M2 value","M3 value","M4 value"],"estimatedInputTokens":"copied number"}. ' +
+  "Do not infer or guess missing data.";
+
+const probeContract = Object.freeze({
+  schemaVersion: 2,
+  promptTool: "distilly_get",
+  briefingTool: "distilly_pending",
+  markerCount: 5,
+  markerWidth: 32,
+  promptTemplate: PROMPT_PROBE_TEMPLATE,
+  briefingTemplate: BRIEFING_PROBE_TEMPLATE,
+});
+
+export const probeContractDigest = sha256(canonicalJson(probeContract));
+
+export const promptProbeText = (input) =>
+  PROMPT_PROBE_TEMPLATE.replace("{{input}}", JSON.stringify(input));
+
+export const briefingProbeText = (input) =>
+  BRIEFING_PROBE_TEMPLATE.replace("{{input}}", JSON.stringify(input));

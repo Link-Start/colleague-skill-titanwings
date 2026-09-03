@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const rootSource = await readFile(new URL("../src/index.ts", import.meta.url), "utf8");
 const stdioSource = await readFile(new URL("../src/stdio.ts", import.meta.url), "utf8");
+const schemaSource = await readFile(new URL("../src/internal-schema.ts", import.meta.url), "utf8");
 const serverSource = await readFile(new URL("../src/server.ts", import.meta.url), "utf8");
 const fixtureSource = await readFile(new URL("./stdio-fixture.mjs", import.meta.url), "utf8");
 
@@ -20,6 +21,17 @@ const stdioExports = [
   ),
 ].map((match) => match[1]);
 assert.deepEqual(stdioExports, ["runStdio"]);
+
+assert.match(
+  schemaSource,
+  /export const advertisedToolContractDigest/u,
+  "The internal schema seam must expose the projection-bound digest",
+);
+assert.match(
+  schemaSource,
+  /export const projectAdvertisedSchema/u,
+  "The internal schema seam must own the advertised projection",
+);
 
 assert.match(
   serverSource,

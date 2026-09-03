@@ -334,7 +334,7 @@ exit 0
     });
   });
 
-  it("accepts OpenClaw and Hermes host boundaries but fails closed without evidence", async () => {
+  it("accepts OpenClaw and Hermes host boundaries but fails closed for unknown versions", async () => {
     const { root, home, environment } = await fixture();
     vi.stubEnv("DISTILLY_TEST_SECRET", "must-not-cross-the-host-boundary");
     const openclaw = join(root, "host-bin", "openclaw");
@@ -350,7 +350,7 @@ if [ "$1" = "--version" ]; then
     printf '%s\\n' 'OpenClaw state was not isolated.' >&2
     exit 1
   fi
-  printf '%s\\n' 'OpenClaw 2026.3.24 (af6f32f)'
+  printf '%s\\n' 'OpenClaw 2026.3.25 (unrecorded)'
 fi
 exit 0
 `,
@@ -370,7 +370,7 @@ if [ "$1" = "--version" ]; then
     printf '%s\\n' 'Hermes home was not isolated.' >&2
     exit 1
   fi
-  printf '%s\\n' 'Hermes Agent v0.9.0 (2026.4.13)'
+  printf '%s\\n' 'Hermes Agent v0.9.1 (unrecorded)'
   printf '%s\\n' 'Project: hermes-agent'
 fi
 exit 0

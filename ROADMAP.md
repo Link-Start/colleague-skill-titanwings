@@ -23,6 +23,7 @@ Distilly is turning the original `colleague-skill` idea into a dependable local 
 - [x] Install an approved profile as a self-contained long-lived Person Skill without copying private raw material.
 - [x] Assemble and verify the self-contained `0.1.0-preview.1` Codex package with canonical Skill bytes, release digests, and an absolute launcher.
 - [x] Add OpenClaw and Hermes compatibility bindings: real bundle/Skill installation, host discovery checks, managed MCP configuration, and five-tool smoke coverage.
+- [x] Run real-host transport-capacity sessions for OpenClaw `2026.3.24` and Hermes `v0.9.0` through a deterministic synthetic fixture server, and commit separate content-free fixtures for their measured net budgets.
 - [x] Document an explicit, isolated `dot-skill` Legacy Skill compatibility route for non-Codex hosts without weakening Plugin preflight.
 
 This work lives on the repository's default public [`distilly-plugin`](https://github.com/titanwings/distilly/tree/distilly-plugin) branch. It is a Developer Preview, not a tagged release or an npm publication. The Plugin instructions do not call or bundle the separate legacy implementation; its explicit compatibility route is documented independently.
@@ -39,8 +40,8 @@ This work lives on the repository's default public [`distilly-plugin`](https://g
 Each host is complete only when it has its own binding, absolute launcher, setup/doctor/restart/uninstall lifecycle, exact-version capacity fixture, five-tool discovery proof, persistent Person Skill test, and packaged smoke test. A copied Skill directory or logo is not host support.
 
 - [ ] Claude Code (binding included; exact capacity fixture and restart evidence pending)
-- [ ] OpenClaw (compatibility binding shipped; exact capacity fixture and restart evidence pending)
-- [ ] Hermes (compatibility binding shipped; exact capacity fixture and restart evidence pending)
+- [ ] OpenClaw (real `2026.3.24` capacity fixture recorded; full restart, persistent-Skill, and packaged acceptance evidence pending)
+- [ ] Hermes (real `v0.9.0` capacity fixture recorded; full restart, persistent-Skill, and packaged acceptance evidence pending)
 - [ ] Grok Build
 - [ ] Grok Bot
 - [ ] OpenCode

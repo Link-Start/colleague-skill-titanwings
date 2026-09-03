@@ -1,5 +1,8 @@
 import type { EngineClient, ReviewLaunch, ReviewRef } from "@distilly/protocol";
 
+/** Host-specific advertised-schema dialects supported by the MCP adapter. */
+export type McpSchemaProfile = "openclaw" | "hermes";
+
 /** Opens or reuses the local review surface for one suspended candidate. */
 export interface ReviewPresenter {
   /**
@@ -15,6 +18,12 @@ export interface ReviewPresenter {
 export interface McpServerOptions {
   readonly client: EngineClient;
   readonly reviewPresenter: ReviewPresenter;
+  /**
+   * Optional host-side schema projection. Canonical descriptors remain the
+   * wire contract; projections only accommodate a host's advertised-schema
+   * parser and never relax server-side validation.
+   */
+  readonly schemaProfile?: McpSchemaProfile;
 }
 
 /** Transport-neutral server handle. It does not own the injected EngineClient. */

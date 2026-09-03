@@ -30,6 +30,7 @@ import type {
 import packageJson from "../package.json" with { type: "json" };
 
 import { registerSdkServer } from "./internal.js";
+import { projectAdvertisedSchema } from "./internal-schema.js";
 import type { McpServer, McpServerOptions, ReviewPresenter } from "./types.js";
 
 const SERVER_INFO = { name: "distilly", version: packageJson.version } as const;
@@ -323,6 +324,7 @@ const registerTool = <Input, Output extends { readonly ok: boolean }>(
   lifecycle: DistillyMcpServer,
   contract: McpToolContract<string, Input, Output>,
   handler: (input: Input) => Promise<Output>,
+  schemaProfile: McpServerOptions["schemaProfile"],
 ): void => {
   server.registerTool(
     contract.name,
@@ -331,8 +333,16 @@ const registerTool = <Input, Output extends { readonly ok: boolean }>(
       description: contract.description,
       // Protocol owns runtime input validation so invalid tool calls return the
       // same typed WireFailure as every other Distilly transport boundary.
-      inputSchema: fromJsonSchema<Input>(contract.inputSchema, boundaryPassthroughValidator),
-      outputSchema: fromJsonSchema<Output>(contract.outputSchema),
+      inputSchema: fromJsonSchema<Input>(
+        projectAdvertisedSchema(contract.inputSchema, schemaProfile) as typeof contract.inputSchema,
+        boundaryPassthroughValidator,
+      ),
+      outputSchema: fromJsonSchema<Output>(
+        projectAdvertisedSchema(
+          contract.outputSchema,
+          schemaProfile,
+        ) as typeof contract.outputSchema,
+      ),
       annotations: contract.annotations,
     },
     async (input) =>
@@ -433,14 +443,40 @@ class DistillyMcpServer implements McpServer {
 export const createMcpServer = (options: McpServerOptions): McpServer => {
   const server = new SdkMcpServer(SERVER_INFO);
   const handle = new DistillyMcpServer(server);
-  registerTool(server, handle, getContract, (input) => handleGet(options.client, input));
-  registerTool(server, handle, ingestContract, (input) => handleIngest(options.client, input));
-  registerTool(server, handle, pendingContract, (input) => handlePending(options.client, input));
-  registerTool(server, handle, commitContract, (input) =>
-    handleCommit(options.client, options.reviewPresenter, input),
+  registerTool(
+    server,
+    handle,
+    getContract,
+    (input) => handleGet(options.client, input),
+    options.schemaProfile,
   );
-  registerTool(server, handle, correctContract, (input) =>
-    handleCorrect(options.client, options.reviewPresenter, input),
+  registerTool(
+    server,
+    handle,
+    ingestContract,
+    (input) => handleIngest(options.client, input),
+    options.schemaProfile,
+  );
+  registerTool(
+    server,
+    handle,
+    pendingContract,
+    (input) => handlePending(options.client, input),
+    options.schemaProfile,
+  );
+  registerTool(
+    server,
+    handle,
+    commitContract,
+    (input) => handleCommit(options.client, options.reviewPresenter, input),
+    options.schemaProfile,
+  );
+  registerTool(
+    server,
+    handle,
+    correctContract,
+    (input) => handleCorrect(options.client, options.reviewPresenter, input),
+    options.schemaProfile,
   );
 
   registerSdkServer(handle, server, handle.closingPromise);

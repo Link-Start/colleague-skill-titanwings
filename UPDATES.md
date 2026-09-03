@@ -6,7 +6,7 @@ The `distilly-plugin` branch is now the repository's default public Developer Pr
 
 Until a host has a verified native Plugin binding, users may explicitly install that branch as a best-effort Legacy Skill compatibility mode. This keeps the older local-file distillation flow available on Claude Code, OpenClaw, Hermes, DeepSeek Harness, Pi agent, Grok Build, and OpenCode; Grok Bot remains a manual saved/private Skill path. It is not an automatic fallback and does not claim the Preview's SQLite, five-tool MCP, Panel, lifecycle, or security guarantees. See [INSTALL.md](INSTALL.md#legacy-skill-compatibility-for-hosts-without-a-verified-plugin-binding).
 
-Codex is the first verified briefing host. OpenClaw and Hermes have compatibility bindings, but still need exact host/version capacity fixtures before their setup can activate briefing. The next bottleneck is host evidence and binding coverage, not another layer of storage abstraction. We need contributors who can build and run Plugin packages for:
+Codex, OpenClaw `2026.3.24`, and Hermes `v0.9.0` now have real-host transport-capacity fixtures. Their recorded net budgets are 65,536 and 49,752 serialized bytes respectively, measured through each real host executable/model and MCP transport against a deterministic synthetic fixture server in an isolated clean session. This proves the recorded briefing/tool-result path; full restart, persistent-Skill, and packaged acceptance evidence remains separate. Setup still fails closed for any unrecorded host/version or changed release/tool tuple. The next bottleneck is host evidence and binding coverage, not another layer of storage abstraction. We need contributors who can build and run Plugin packages for:
 
 - Grok Bot
 - Claude Code

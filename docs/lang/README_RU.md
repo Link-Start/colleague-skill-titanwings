@@ -6,7 +6,7 @@ Distilly превращает явно предоставленные матер
 
 ## Установка
 
-Предварительная версия находится в ветке `distilly-plugin` и сейчас проверена для Codex. Нужны Node.js `22.19+` или `24`, pnpm `10.32+` и локальная CLI Codex:
+Предварительная версия находится в ветке `distilly-plugin`. Для Codex проверен полный workflow; OpenClaw `2026.3.24` и Hermes `v0.9.0` также имеют реальные transport-capacity fixtures, а полная проверка lifecycle остаётся отдельной. Ниже приведён пример установки Codex. Нужны Node.js `22.19+` или `24`, pnpm `10.32+` и локальная CLI Codex:
 
 ```bash
 git clone --branch distilly-plugin https://github.com/titanwings/distilly.git
@@ -24,7 +24,7 @@ node packages/cli/lib/bin.js doctor --host codex
 node packages/cli/lib/bin.js uninstall --host codex
 ```
 
-Для OpenClaw и Hermes теперь есть локальные compatibility bindings. OpenClaw устанавливает и обнаруживает Claude-совместимый bundle; Hermes устанавливает управляемый Skill и регистрирует тот же MCP-сервер через wrapper и конфигурацию. Оба binding выполняют smoke-проверки установки, обнаружения и пяти инструментов. В этой версии для обоих host ещё нет точного briefing-capacity fixture, поэтому setup безопасно завершается до briefing (fail closed) и не заявляет полную поддержку дистилляции.
+Для OpenClaw и Hermes теперь есть локальные compatibility bindings. OpenClaw устанавливает и обнаруживает Claude-совместимый bundle; Hermes устанавливает управляемый Skill и регистрирует тот же MCP-сервер через wrapper и конфигурацию. Оба binding выполняют smoke-проверки установки, обнаружения и пяти инструментов, а для указанных ниже точных версий уже записаны реальные transport-capacity fixtures хоста. Измерение использует детерминированный synthetic fixture server через настоящий executable/model/MCP transport; полная packaged lifecycle-проверка остаётся отдельной. Для незаписанной версии или изменённого release/tool tuple setup по-прежнему завершается безопасно (fail closed).
 
 Контракт MCP для модели содержит ровно пять инструментов: `distilly_get`, `distilly_ingest`, `distilly_pending`, `distilly_commit` и `distilly_correct`.
 
@@ -32,7 +32,7 @@ node packages/cli/lib/bin.js uninstall --host codex
 
 Указанные выше требования к Node.js, pnpm и Codex относятся только к нативному Plugin Codex; режим Legacy не требует Codex, Node.js или pnpm, но для полного старого workflow нужны обычная поддержка Skill на стороне host и возможности filesystem, Bash и Python.
 
-Сейчас Codex — единственный host с проверенной briefing capacity для Plugin `distilly-plugin`. Для OpenClaw и Hermes есть compatibility bindings, но точного capacity fixture ещё нет. Если локальный host Skill ещё не имеет проверенного Plugin binding, пользователь может явно установить поддерживаемый Legacy Skill из ветки `dot-skill`:
+Codex, OpenClaw `2026.3.24` и Hermes `v0.9.0` теперь имеют проверенные transport-capacity fixtures хоста для Plugin `distilly-plugin`. В изолированных чистых сессиях с `openai-codex/gpt-5.4` записанные net budgets составляют 65 536 сериализованных байт для OpenClaw и 49 752 для Hermes. Если локальный host Skill ещё не имеет проверенного Plugin binding, пользователь может явно установить поддерживаемый Legacy Skill из ветки `dot-skill`:
 
 ```bash
 git clone --single-branch --branch dot-skill --depth 1 \
@@ -44,6 +44,6 @@ git -C <host-skills-dir>/distilly rev-parse HEAD
 
 ## Текущий охват
 
-Поддерживаются выбранные пользователем TXT, Markdown, JSON и SRT/VTT, вставленный текст и выбранные публичные URL. Codex проверен для briefing. OpenClaw и Hermes проходят локальные compatibility smoke-проверки установки, обнаружения и пяти инструментов, но для успешного briefing setup ещё нужны точные capacity fixtures. Для нативных Plugin bindings Claude Code, DeepSeek Harness (DSH), Pi agent, Grok Build, OpenCode и Grok Bot ещё нужны community fixtures; для Grok Bot также нет проверенного импорта локального репозитория.
+Поддерживаются выбранные пользователем TXT, Markdown, JSON и SRT/VTT, вставленный текст и выбранные публичные URL. Codex, OpenClaw `2026.3.24` и Hermes `v0.9.0` проверены по capacity; полная проверка packaged lifecycle остаётся отдельным этапом. Для нативных Plugin bindings Claude Code, DeepSeek Harness (DSH), Pi agent, Grok Build, OpenCode и Grok Bot ещё нужны community fixtures; для Grok Bot также нет проверенного импорта локального репозитория.
 
 См. [дорожную карту](../../ROADMAP.md) и [обновление 2026-09](../../UPDATES.md).

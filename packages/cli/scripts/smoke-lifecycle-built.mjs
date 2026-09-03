@@ -56,8 +56,8 @@ try {
   await mkdir(hostBin);
   await executable("codex", "codex-cli 0.146.0");
   await executable("claude", "2.1.221 (Claude Code)");
-  await executable("openclaw", "OpenClaw 2026.3.24 (af6f32f)");
-  await executable("hermes", "Hermes Agent v0.9.0 (2026.4.13)");
+  await executable("openclaw", "OpenClaw 2026.3.25 (unrecorded)");
+  await executable("hermes", "Hermes Agent v0.9.1 (unrecorded)");
 
   assert.match(run("setup", "--host", "codex"), /Restart the host/u);
   const doctor = JSON.parse(run("doctor"));

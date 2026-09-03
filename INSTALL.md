@@ -4,13 +4,13 @@ This document describes the current TypeScript Plugin preview on the `distilly-p
 
 ## Requirements
 
-These requirements apply only to the native Codex Plugin path. Legacy Skill mode below does not require Codex, Node, or pnpm; its full older workflow requires an ordinary local Skill host with filesystem/Bash/Python capabilities.
+These requirements apply to the native Plugin paths. Legacy Skill mode below does not require Codex, Node, or pnpm; its full older workflow requires an ordinary local Skill host with filesystem/Bash/Python capabilities.
 
 - Node.js `22.19+` or `24`;
 - pnpm `10.32+`; and
-- a locally installed Codex CLI whose version matches the release evidence.
+- a locally installed supported host whose version matches the release evidence: Codex CLI `0.146.0`, OpenClaw `2026.3.24`, or Hermes `v0.9.0`.
 
-The current release evidence is for Codex CLI `0.146.0`. An unknown host version fails closed instead of installing an unverified integration.
+An unknown host version fails closed instead of installing an unverified integration.
 
 ## Source checkout
 
@@ -56,7 +56,7 @@ The Preview includes local lifecycle bindings for two additional hosts:
 - **OpenClaw:** installs a Claude-compatible bundle at `~/.openclaw/extensions/distilly` with an owned `.mcp.json`. Verify discovery with `openclaw plugins inspect distilly --json`.
 - **Hermes:** installs the canonical Skill at `~/.hermes/skills/distilly`, a managed wrapper at `~/.distilly/bin/distilly-hermes`, and the `distilly` MCP entry in `~/.hermes/config.yaml`. The optional `resources` and `prompts` surfaces are disabled; verify five tools with `hermes mcp test distilly`.
 
-The CLI accepts `setup --host openclaw` and `setup --host hermes`, but this release does not yet contain an exact capacity fixture for those host versions. Setup consequently returns `host_unsupported` before writing files. Discovery/installation compatibility is real, but it is not an end-to-end briefing verification and it never falls back to `dot-skill` automatically.
+The CLI accepts `setup --host openclaw` and `setup --host hermes` when their installed versions match the recorded real-host transport fixtures: OpenClaw `2026.3.24` has a 65,536-byte net budget and Hermes `v0.9.0` has a 49,752-byte net budget. These measurements use a deterministic synthetic fixture server through the real host executable, `openai-codex/gpt-5.4`, and MCP transport in an isolated clean session; they prove the recorded briefing/tool-result path, not the complete packaged lifecycle. Unknown versions or changed release/tool tuples return `host_unsupported` before writing files. Setup never falls back to `dot-skill` automatically.
 
 ## Run the packaged preview
 

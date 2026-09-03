@@ -30,14 +30,19 @@ Run the narrowest checks that cover a change, then run the full gate before publ
 | Repository Python scripts | `python3 -B scripts/run_tests.py && ruff check scripts tests` |
 | Full outgoing candidate | `pnpm run gates` |
 
-The current package acceptance check covers the verified Codex path plus compatibility smoke for OpenClaw and Hermes:
+The package acceptance check covers the verified Codex path. OpenClaw and Hermes capacity evidence is a separate real-host transport check: the verifier uses the installed executable, model, and MCP transport with a deterministic synthetic fixture server in an isolated clean session. It does not replace packaged restart or lifecycle acceptance:
 
 ```bash
 pnpm run package:preview:codex
 pnpm --filter @distilly/cli run verify:package:codex
 ```
 
-It uses temporary homes and a self-contained package. It must not depend on an existing Distilly installation or a checkout path after setup.
+The package check uses temporary homes and a self-contained package. It must not depend on an existing Distilly installation or a checkout path after setup. The real-host capacity commands are run only when the corresponding local host and credentials are available:
+
+```bash
+node packages/cli/scripts/verify-real-host-capacity-fixture.mjs openclaw
+node packages/cli/scripts/verify-real-host-capacity-fixture.mjs hermes
+```
 
 ## Contribution workflow
 
@@ -45,4 +50,4 @@ Keep each feature focused, with its implementation, tests, generated artifacts, 
 
 Never commit local person data, source material, environment files, credentials, Agent-specific instructions, generated databases, or host state. The root `.gitignore` covers the standard local paths, but contributors must still inspect the complete outgoing diff. Compatibility tests may use temporary homes and fake host executables; they must not add personal `.agents` files or real host state.
 
-Before calling a host verified, test setup, doctor, restart discovery, exactly five MCP tools, profile prompt/install, and uninstall with person data retained on a clean local home. OpenClaw/Hermes compatibility smoke is reported separately until an exact capacity fixture exists.
+Before calling a host capacity-verified, run the corresponding real-host verifier with the supported Node runtime and local host credentials. The verifier records only a content-free fixture: exact host version, release/tool digests, measured net budgets, structured/text equality, tail-marker observation, and a normalized transcript digest. It never stores credentials or transcripts; its synthetic server is not the product Engine. The recorded OpenClaw/Hermes runs use `openai-codex/gpt-5.4` and are transport/value measurements, not a guarantee for every model or user session. Setup, doctor, restart discovery, exactly five MCP tools, profile prompt/install, and uninstall with person data retained still require a clean-home lifecycle check; unknown host/version tuples remain fail-closed.

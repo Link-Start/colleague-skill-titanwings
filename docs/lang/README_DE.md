@@ -6,7 +6,7 @@ Distilly verwandelt ausdrücklich bereitgestelltes Material in versionierte **Pe
 
 ## Installation
 
-Die Vorschau liegt im Branch `distilly-plugin` und ist derzeit für Briefings mit Codex verifiziert. Benötigt werden Node.js `22.19+` oder `24`, pnpm `10.32+` und eine lokale Codex-CLI:
+Die Vorschau liegt im Branch `distilly-plugin`. Codex ist für den vollständigen Ablauf verifiziert; OpenClaw `2026.3.24` und Hermes `v0.9.0` haben zusätzlich echte Transport-Kapazitäts-Fixtures, während die vollständige Lifecycle-Abnahme separat bleibt. Die folgenden Befehle zeigen die Codex-Installation. Benötigt werden Node.js `22.19+` oder `24`, pnpm `10.32+` und eine lokale Codex-CLI:
 
 ```bash
 git clone --branch distilly-plugin https://github.com/titanwings/distilly.git
@@ -24,7 +24,7 @@ Codex nach der Installation neu starten. Die Host-Integration lässt sich entfer
 node packages/cli/lib/bin.js uninstall --host codex
 ```
 
-Für OpenClaw und Hermes gibt es jetzt lokale Kompatibilitäts-Bindings. OpenClaw installiert und entdeckt das Claude-kompatible Bundle; Hermes installiert den verwalteten Skill und registriert denselben MCP-Server über Wrapper und Konfiguration. Beide Bindings führen Smoke-Checks für Installation, Discovery und die fünf Tools aus. Für diese beiden Hosts gibt es in dieser Version noch kein exaktes Briefing-Kapazitäts-Fixture; deshalb bricht das Setup vor dem Briefing sicher ab und behauptet keine vollständige Destillation.
+Für OpenClaw und Hermes gibt es jetzt lokale Kompatibilitäts-Bindings. OpenClaw installiert und entdeckt das Claude-kompatible Bundle; Hermes installiert den verwalteten Skill und registriert denselben MCP-Server über Wrapper und Konfiguration. Beide Bindings führen Smoke-Checks für Installation, Discovery und die fünf Tools aus; für die unten genannten exakten Versionen liegen außerdem echte Transport-Kapazitäts-Fixtures des jeweiligen Hosts vor. Die Messung verwendet einen deterministischen synthetischen Fixture-Server über das echte Programm/Modell/MCP-Transport; die vollständige Paket- und Lifecycle-Abnahme bleibt separat. Bei jeder nicht erfassten Version oder einem geänderten Release-/Tool-Tupel schlägt das Setup weiterhin sicher fehl.
 
 Der Modellvertrag besteht aus genau fünf MCP-Tools: `distilly_get`, `distilly_ingest`, `distilly_pending`, `distilly_commit` und `distilly_correct`.
 
@@ -32,7 +32,7 @@ Der Modellvertrag besteht aus genau fünf MCP-Tools: `distilly_get`, `distilly_i
 
 Die oben genannten Node.js-, pnpm- und Codex-Voraussetzungen gelten nur für das native Codex-Plugin; der Legacy-Modus benötigt Codex, Node.js und pnpm nicht, setzt für den vollständigen alten Ablauf aber die normale Skill-Unterstützung des Hosts sowie Zugriff auf Dateisystem, Bash und Python voraus.
 
-Codex ist derzeit der einzige Host mit verifizierter Briefing-Kapazität für das `distilly-plugin`-Plugin. OpenClaw und Hermes besitzen Kompatibilitäts-Bindings, aber noch kein exaktes Kapazitäts-Fixture. Für einen lokalen Skill-Host ohne verifiziertes Plugin-Binding kann der Nutzer ausdrücklich den gepflegten Legacy Skill aus dem Branch `dot-skill` installieren:
+Codex, OpenClaw `2026.3.24` und Hermes `v0.9.0` besitzen jetzt verifizierte Transport-Kapazitäts-Fixtures des Hosts für das `distilly-plugin`-Plugin. In isolierten sauberen Sitzungen mit `openai-codex/gpt-5.4` betragen die gemessenen Nettobudgets 65.536 serialisierte Bytes für OpenClaw und 49.752 für Hermes. Für einen lokalen Skill-Host ohne verifiziertes Plugin-Binding kann der Nutzer ausdrücklich den gepflegten Legacy Skill aus dem Branch `dot-skill` installieren:
 
 ```bash
 git clone --single-branch --branch dot-skill --depth 1 \
@@ -44,6 +44,6 @@ Das ist eine getrennte Implementierung ohne unterstütztes gemeinsames Datenmode
 
 ## Aktueller Umfang
 
-Die Vorschau akzeptiert ausgewählte TXT-, Markdown-, JSON- und SRT/VTT-Dateien, eingefügten Text und vom Nutzer ausgewählte öffentliche URLs. Codex ist für Briefings verifiziert. OpenClaw und Hermes bestehen lokale Kompatibilitäts-Smoke-Checks für Installation, Discovery und fünf Tools, benötigen aber noch exakte Kapazitäts-Fixtures, bevor ein Briefing-Setup erfolgreich sein kann. Für Claude Code, DeepSeek Harness (DSH), Pi agent, Grok Build, OpenCode und Grok Bot fehlen noch Community-Fixtures; für Grok Bot ist außerdem kein lokaler Repository-Import verifiziert.
+Die Vorschau akzeptiert ausgewählte TXT-, Markdown-, JSON- und SRT/VTT-Dateien, eingefügten Text und vom Nutzer ausgewählte öffentliche URLs. Codex, OpenClaw `2026.3.24` und Hermes `v0.9.0` sind kapazitätsverifiziert; die vollständige Paket- und Lifecycle-Abnahme bleibt eine separate Prüfung. Für Claude Code, DeepSeek Harness (DSH), Pi agent, Grok Build, OpenCode und Grok Bot fehlen noch Community-Fixtures; für Grok Bot ist außerdem kein lokaler Repository-Import verifiziert.
 
 Siehe [Roadmap](../../ROADMAP.md) und [Update 2026-09](../../UPDATES.md).

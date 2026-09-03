@@ -9,8 +9,13 @@ import { WIRE_LIMITS, distillyMcpTools } from "@distilly/protocol";
 
 const rootExports = await import("@distilly/mcp");
 const stdioExports = await import("@distilly/mcp/stdio");
+const schemaExports = await import("@distilly/mcp/internal/schema");
 assert.deepEqual(Object.keys(rootExports).sort(), ["createMcpServer"]);
 assert.deepEqual(Object.keys(stdioExports).sort(), ["runStdio"]);
+assert.deepEqual(Object.keys(schemaExports).sort(), [
+  "advertisedToolContractDigest",
+  "projectAdvertisedSchema",
+]);
 
 const HEX_32 = "a".repeat(32);
 const HEX_64 = "b".repeat(64);

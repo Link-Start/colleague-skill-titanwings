@@ -150,7 +150,14 @@ export const openPreviewMcpApplication = async (
           port: options.panel.port ?? (await freePanelPort()),
         }),
     });
-    const mcp = createMcpServer({ client: hostClient, reviewPresenter: panel });
+    let schemaProfile: "openclaw" | "hermes" | undefined;
+    if (options.binding.host === "openclaw") schemaProfile = "openclaw";
+    else if (options.binding.host === "hermes") schemaProfile = "hermes";
+    const mcp = createMcpServer({
+      client: hostClient,
+      reviewPresenter: panel,
+      ...(schemaProfile === undefined ? {} : { schemaProfile }),
+    });
     return new PreviewMcpApplicationImplementation(
       runtime,
       hostClient,
