@@ -19,4 +19,4 @@ Contributions can add a binding, a host fixture, a deterministic launcher check,
 
 I will actively review host contributions, especially real setup/doctor/restart/uninstall runs and evidence that the host discovers the same canonical Skill bytes. A host should be called verified only after its exact version, release tuple, capacity, launcher, and five-tool behavior have been tested.
 
-For installation and the current Preview limits, start with the root [README](README.md). The staged priorities are tracked in [ROADMAP.md](ROADMAP.md).
+For installation and the current Preview limits, start with the root [README](README.md). Versioned user-facing changes are recorded in [CHANGELOG.md](CHANGELOG.md), and staged priorities are tracked in [ROADMAP.md](ROADMAP.md).

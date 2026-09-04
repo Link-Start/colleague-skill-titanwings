@@ -130,6 +130,7 @@ See the full call for contributors in [UPDATES.md](UPDATES.md) and the current p
 ## Project documents
 
 - [Detailed Preview installation](INSTALL.md)
+- [Changelog](CHANGELOG.md)
 - [Architecture and shipped-state map](docs/architecture.md)
 - [Testing contract](docs/testing.md)
 - [Development workflow](docs/development.md)
